@@ -1,1 +1,1 @@
-# EC2-scheduler using Terraform 
+# EC2 instances & RDP -scheduler using Terraform 
