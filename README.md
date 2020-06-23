@@ -1,1 +1,1 @@
-# ec2-scheduler using Terraform 
+# EC2-scheduler using Terraform 
