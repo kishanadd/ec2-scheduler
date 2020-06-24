@@ -14,7 +14,7 @@ variable "region" {
 }
 
 variable "account-id" {
-  default     = "019538826315"
+  default     = "*********"
   description = "aws-accountid"
 }
 
