@@ -1,5 +1,5 @@
 variable "schedule_expression" {
-  default     = "cron(5 * * * ? *)"
+  default     = "cron(0/5 * * * ? *)"
   description = "the aws cloudwatch event rule scheule expression that specifies when the scheduler runs. Default is 5 minuts past the hour. for debugging use 'rate(5 minutes)'. See https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html"
 }
 
@@ -22,7 +22,7 @@ variable "tag" {
   default     = "schedule"
   description = "the tag name used on the EC2 or RDS instance to contain the schedule json string for the instance."
 }
- 
+  
 
   // state table
 
@@ -130,13 +130,13 @@ resource "aws_lambda_function" "Main" {
   handler          = "main.lambda_handler"
   runtime          = "python3.7"
   timeout          = 300
- 
- 
+  
+  
   environment {
-    variables = {    
+    variables = {     
+      
      
-     
-     
+      
 
       CONFIG_TABLE = aws_dynamodb_table.ConfigTable.name
       TAG_NAME   = var.tag
@@ -151,8 +151,9 @@ resource "aws_lambda_function" "Main" {
       TRACE = "No"
       SCHEDULER_RULE = "ec2-scheduler-SchedulerRule"
       MemorySize = 128
-      SOLUTION_ID = "S00030"
+      SOLUTION_ID	= "S00030"
       USER_AGENT = "InstanceScheduler-ec2-scheduler-v1.3.1"
+      region = var.region
     }
   }
 }
@@ -171,7 +172,7 @@ resource "aws_lambda_permission" "SchedulerInvokePermission" {
 resource "aws_cloudwatch_event_rule" "SchedulerRule" {
   name                      = "${var.resource_name_prefix}-SchedulerRule"
   description               = "Instance Scheduler - Rule to trigger instance for scheduler function version "
-  schedule_expression       = var.schedule_expression
+  schedule_expression       = var.schedule_expression 
   is_enabled                = true
   depends_on                = [aws_lambda_function.Main]
 }
@@ -305,9 +306,17 @@ resource "aws_iam_role_policy" "SchedulerPolicy" {
                 "${aws_kms_key.InstanceSchedulerEncryptionKey.arn}"
             ],
             "Effect": "Allow"
-        }      
+        }       
     ]
   }
   EOF
-} 
+}
+
+
+
+
+
+
+      
+
 
